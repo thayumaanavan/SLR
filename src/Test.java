@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.lang.Math;
 import com.leapmotion.leap.*;
 
-class SampleListener extends Listener {
+class TestListener extends Listener {
     public void onInit(Controller controller) {
         System.out.println("Initialized");
     }
@@ -69,10 +69,10 @@ class SampleListener extends Listener {
     }
 }
 
-class Sample {
+class Test {
     public static void main(String[] args) {
         // Create a sample listener and controller
-        SampleListener listener = new SampleListener();
+        TestListener listener = new TestListener();
         Controller controller = new Controller();
 
         // Have the sample listener receive events from the controller
