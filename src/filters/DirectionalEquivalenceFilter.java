@@ -37,6 +37,8 @@ public class DirectionalEquivalenceFilter extends Filter {
 		            }
 		            else
 		            {
+		            	System.out.println("Filtered vector");
+		            	System.out.println(vector[0]+","+vector[1]+","+vector[2]);
 		                return null;
 		            }
 		

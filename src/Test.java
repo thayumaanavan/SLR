@@ -11,11 +11,19 @@ import java.lang.Math;
 
 import logic.ProcessingUnit;
 
-import com.leapmotion.leap.*;
+import com.leapmotion.leap.Controller;
+import com.leapmotion.leap.Frame;
+import com.leapmotion.leap.Hand;
+import com.leapmotion.leap.Listener;
+
+import java.util.Scanner;
+import java.util.Vector;
 
 class TestListener extends Listener {
 	
 	ProcessingUnit gesture;
+	Vector<Double> tmp=new Vector<Double>(20);
+	
 	
 	public TestListener(){
 		gesture=new ProcessingUnit(true);
@@ -39,46 +47,29 @@ class TestListener extends Listener {
     public void onFrame(Controller controller) {
         // Get the most recent frame and report some basic information
         Frame frame = controller.frame();
-        System.out.println("Frame id: " + frame.id()
-                         + ", timestamp: " + frame.timestamp()
-                         + ", hands: " + frame.hands().count()
-                         + ", fingers: " + frame.fingers().count()
-                         + ", tools: " + frame.tools().count());
-
-        if (!frame.hands().empty()) {
-            // Get the first hand
-            Hand hand = frame.hands().get(0);
-
-            // Check if the hand has any fingers
-            FingerList fingers = hand.fingers();
-            if (!fingers.empty()) {
-                // Calculate the hand's average finger tip position
-                Vector avgPos = Vector.zero();
-                Vector avgvel=Vector.zero();
-                for (Finger finger : fingers) {
-                    avgPos = avgPos.plus(finger.tipPosition());
-                    avgvel=avgvel.plus(finger.tipVelocity());
-                }
-                Vector acc=avgvel.divide(fingers.count());
-                gesture.AddData(new double[] {acc.getX(),acc.getY(),acc.getZ()});
-                avgPos = avgPos.divide(fingers.count());
-                System.out.println("Hand has " + fingers.count()
-                                 + " fingers, average finger tip position: " + avgPos+",average velocity:"+avgvel);
-            }
-
-            // Get the hand's sphere radius and palm position
-            System.out.println("Hand sphere radius: " + hand.sphereRadius()
-                             + " mm, palm position: " + hand.palmPosition());
-
-            // Get the hand's normal vector and direction
-            Vector normal = hand.palmNormal();
-            Vector direction = hand.direction();
-
-            // Calculate the hand's pitch, roll, and yaw angles
-           System.out.println("Hand pitch: " + Math.toDegrees(direction.pitch()) + " degrees, "
-                            + "roll: " + Math.toDegrees(normal.roll()) + " degrees, "
-                             + "yaw: " + Math.toDegrees(direction.yaw()) + " degrees\n");
+        if(!frame.hands().empty())
+        {
+        	Hand hand=new Hand();
+        	hand=frame.hands().get(0);
+        	
+        	tmp.addElement((double)frame.hands().count());
+        	tmp.addElement((double)hand.sphereRadius());
+        	tmp.add((double)hand.fingers().count());
+        	tmp.add((double)hand.direction().roll());
+        	tmp.add((double)hand.direction().yaw());
+        	tmp.addElement((double)hand.finger(0).tipPosition().getX());
+        	tmp.add((double)hand.direction().pitch());
+        	tmp.add((double)hand.direction().roll());
+        	tmp.add((double)hand.direction().yaw());
+        	//System.out.println(tmp.get(1));
+        	//System.out.println(tmp.get(2));
+        	gesture.addData(tmp);
+        	tmp=new Vector<Double>(20);
         }
+        
+        
+        
+        
     }
 }
 
@@ -90,16 +81,89 @@ class Test {
 
         // Have the sample listener receive events from the controller
         controller.addListener(listener);
+       
+        while(true)
+        {
+        	System.out.println("1.Training phase\n2.Real time prediction phase\n");
+        	
+        
 
         // Keep this process running until Enter is pressed
-        System.out.println("Press Enter to quit...");
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //System.out.println("Press Enter to quit...");
+        
+        
+        	try {
+        		Scanner in = new Scanner(System.in);
+        		int ch=in.nextInt();
+        		System.out.println(ch);
+        		switch(ch)
+        		{
+        		case 1:
+        			Boolean condition=true;
+        			while(condition)
+        			{
+        			System.out.println("1.Start gesture\n 2.Stop gesture\n 3.Add gesture Sign\n" 
+        	        		+"4.Save to file\n5.Train\n6.Back\n");
+            		int c=in.nextInt();
+            		
+            		switch(c)
+            		{
+            		case 1:
+            			listener.gesture.startTraining();
+            			break;
+            		case 2:
+            			listener.gesture.stopTraining();
+            			break;
+            		case 3:
+            			System.out.println("Enter the gesture id:");
+            			int id=in.nextInt();
+            			listener.gesture.finishTraining(id);
+            			break;
+            		case 4:
+            			System.out.println("Enter the file name:");
+            			Scanner s = new Scanner(System.in);
+            			listener.gesture.Save(s.next());
+            			break;
+            		case 5:
+            			listener.gesture.train();
+            			break;
+            		case 6:
+            			condition=false;
+            			break;
+            		}
+        			}
+        			break;
+        		case 2:
+        			Boolean cond=true;
+        			while(cond)
+        			{
 
-        // Remove the sample listener when done
-        controller.removeListener(listener);
+        			System.out.println("1.Start gesture\n 2.Stop gesture\n 3.Back\n");
+            		int choice=in.nextInt();
+            		switch(choice)
+            		{
+            		case 1:
+            			listener.gesture.startRecognition();
+            			break;
+            		case 2:
+            			listener.gesture.stopRecognition();
+            			break;
+            		case 3:
+            			cond=false;
+            			break;
+            		
+            		}
+        			}
+            		break;
+        		}
+        		
+        		
+        		
+        	} catch (IOException e) {
+            e.printStackTrace();
+        	}
+        }
+        
+        
     }
 }
