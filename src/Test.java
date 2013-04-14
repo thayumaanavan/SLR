@@ -103,7 +103,7 @@ class Test {
         			while(condition)
         			{
         			System.out.println("1.Start gesture\n 2.Stop gesture\n 3.Add gesture Sign\n" 
-        	        		+"4.Save to file\n5.Train\n6.Back\n");
+        	        		+"4.Save training data to file\n5.Load training data from file\n6.Train\n7.Back\n");
             		int c=in.nextInt();
             		
             		switch(c)
@@ -125,9 +125,14 @@ class Test {
             			listener.gesture.Save(s.next());
             			break;
             		case 5:
-            			listener.gesture.train();
+            			System.out.println("Enter the file name:");
+            			Scanner sc = new Scanner(System.in);
+            			listener.gesture.load(sc.next());
             			break;
             		case 6:
+            			listener.gesture.train();
+            			break;
+            		case 7:
             			condition=false;
             			break;
             		}
@@ -138,7 +143,7 @@ class Test {
         			while(cond)
         			{
 
-        			System.out.println("1.Start gesture\n 2.Stop gesture\n 3.Back\n");
+        			System.out.println("1.Start gesture\n 2.Stop gesture\n 3.save model to file\n4.Load model to file\n5.Back\n");
             		int choice=in.nextInt();
             		switch(choice)
             		{
@@ -149,6 +154,12 @@ class Test {
             			listener.gesture.stopRecognition();
             			break;
             		case 3:
+            			listener.gesture.saveModel(in.next());
+            			break;
+            		case 4:
+            			listener.gesture.loadModel(in.next());
+            			break;
+            		case 5:
             			cond=false;
             			break;
             		

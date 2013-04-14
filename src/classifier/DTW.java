@@ -4,6 +4,8 @@
 package classifier;
 
 import java.util.Vector;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.lang.Math;
 
 import util.CircularBuffer;
@@ -553,5 +555,50 @@ public class DTW {
 	}
 
 	
+	
+	public Boolean saveModelToFile(String name) throws FileNotFoundException
+	{
+		PrintWriter pw=new PrintWriter(name);
+		
+		if(!trained)
+		{
+			System.out.println("Model not yet trained");
+			return false;
+		}
+		
+		pw.println("DTW Model File");
+		pw.println("NumberOfDimensions:"+numFeatures);
+		pw.println("NumberOfClasses:"+numClasses);
+		pw.println("NumberOfTemplates:"+numTemplates);
+		//pw.println("DistanceMethod:Euclidea");
+		pw.println("OverallAverageTemplateLength:"+avgTempLength);
+		
+		for(int i=0;i<numTemplates;i++)
+		{
+			pw.println("Template:"+i+1);
+			pw.println("ClassLabel:"+templatesBuffer.get(i).classLabel);
+			pw.println("TimeSeriesLength:"+templatesBuffer.get(i).timeSeries.getNumRows());
+			pw.println("TemplateThreshold:"+templatesBuffer.get(i).threshold);
+			pw.println("TrainingMu:"+templatesBuffer.get(i).trainingMu);
+			pw.println("TrainingSigma:"+templatesBuffer.get(i).trainingSigma);
+			pw.println("AverageTemplateLength:"+templatesBuffer.get(i).avgTempLength);
+			pw.println("TimeSeries");
+			
+			for(int k=0;k<templatesBuffer.get(i).timeSeries.getNumRows();k++)
+			{
+				for(int j=0;j<templatesBuffer.get(i).timeSeries.getNumCols();j++)
+					pw.print(templatesBuffer.get(i).timeSeries.dataptr[k][j]+"\t");
+				pw.println();
+			
+			}
+			pw.println();
+		}
+		return true;
+	}
+	
+	public Boolean loadModelToFile(String name)
+	{
+		return true;
+	}
 
 }

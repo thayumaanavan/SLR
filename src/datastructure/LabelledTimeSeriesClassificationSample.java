@@ -12,6 +12,12 @@ public class LabelledTimeSeriesClassificationSample {
 	int classLabel;
 	Matrix data;
 	
+	public LabelledTimeSeriesClassificationSample()
+	{
+		classLabel=0;
+		data=new Matrix();
+	}
+	
 	public LabelledTimeSeriesClassificationSample(int cl,Matrix m)
 	{
 		classLabel=cl;

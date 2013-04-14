@@ -8,6 +8,7 @@ package logic;
  *
  */
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -190,5 +191,31 @@ public class ProcessingUnit {
 			System.out.println("gesture 3");
 			
 		}
+	}
+
+	/**
+	 * @param next
+	 * @throws IOException 
+	 */
+	public void load(String next) throws IOException {
+		// TODO Auto-generated method stub
+		current.loadDatasetToFile(next);
+	}
+
+	/**
+	 * @param next
+	 * @throws FileNotFoundException 
+	 */
+	public void saveModel(String next) throws FileNotFoundException {
+		// TODO Auto-generated method stub
+		recognition.saveModelToFile(next);
+	}
+
+	/**
+	 * @param next
+	 */
+	public void loadModel(String next) {
+		// TODO Auto-generated method stub
+		recognition.loadModelToFile(next);
 	}
 }

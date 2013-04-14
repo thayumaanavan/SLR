@@ -10,7 +10,7 @@ package util;
 public class ClassTracker {
 
 	
-	int classLabel;
+	public int classLabel;
     public int counter;
     String className;
 	/**
